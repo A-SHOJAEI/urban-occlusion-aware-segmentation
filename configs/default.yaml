@@ -1,0 +1,111 @@
+# Urban Occlusion-Aware Segmentation Configuration
+
+# Paths
+data:
+  root_dir: "./data"
+  num_classes: 19
+  image_size: [256, 512]  # Reduced from [512, 1024] to save memory
+  use_synthetic: true  # Use synthetic data for testing
+
+# Model configuration
+model:
+  type: "ensemble"  # Options: segformer, deeplabv3plus, ensemble
+  segformer:
+    backbone: "mit_b3"
+    pretrained: true
+    dropout: 0.1
+  deeplabv3plus:
+    backbone: "resnet101"
+    pretrained: true
+    output_stride: 16
+  ensemble:
+    weights: [0.5, 0.5]  # Weights for [segformer, deeplabv3plus]
+    uncertainty_threshold: 0.3
+
+# Training configuration
+training:
+  batch_size: 2  # Reduced from 4 to 2 to save memory
+  num_epochs: 50
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_epochs: 5
+  gradient_clip: 1.0
+  amp: true  # Automatic Mixed Precision
+
+  # Early stopping
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+
+  # Checkpoint
+  save_dir: "./checkpoints"
+  save_freq: 5  # Save every N epochs
+  keep_best: true
+
+# Loss configuration
+loss:
+  primary: "occlusion_weighted_ce"  # Occlusion-weighted cross entropy
+  auxiliary: "boundary_loss"
+  weights:
+    primary: 0.7
+    auxiliary: 0.3
+  occlusion:
+    boundary_width: 5  # Pixels around boundaries
+    boundary_weight: 3.0  # Weight multiplier for boundary pixels
+    edge_threshold: 0.1
+
+# Data augmentation
+augmentation:
+  train:
+    horizontal_flip: 0.5
+    random_scale: [0.5, 2.0]
+    random_crop: true
+    color_jitter:
+      brightness: 0.3
+      contrast: 0.3
+      saturation: 0.3
+      hue: 0.1
+    random_rotate: 10
+    gaussian_blur: 0.2
+  val:
+    resize: [256, 512]  # Match training image size
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# Evaluation configuration
+evaluation:
+  batch_size: 4
+  metrics:
+    - "miou"
+    - "boundary_f1"
+    - "occlusion_recall"
+    - "pixel_accuracy"
+  boundary_threshold: 5  # Distance in pixels for boundary evaluation
+  occlusion_classes: [11, 12, 13, 14]  # person, rider, car, truck
+
+# Inference configuration
+inference:
+  batch_size: 1
+  target_fps: 15
+  multi_scale: false
+  flip_test: false
+  output_dir: "./results"
+
+# Logging
+logging:
+  log_dir: "./logs"
+  log_interval: 10  # Log every N batches
+  tensorboard: true
+  mlflow:
+    tracking_uri: "./mlruns"
+    experiment_name: "urban_occlusion_segmentation"
+
+# System
+system:
+  seed: 42
+  num_workers: 0  # Set to 0 to avoid multiprocessing issues with Python 3.13
+  pin_memory: true
+  device: "cuda"  # Options: cuda, cpu, auto
