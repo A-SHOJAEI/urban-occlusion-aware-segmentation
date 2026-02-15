@@ -1,0 +1,106 @@
+augmentation:
+  normalize:
+    mean:
+    - 0.485
+    - 0.456
+    - 0.406
+    std:
+    - 0.229
+    - 0.224
+    - 0.225
+  train:
+    color_jitter:
+      brightness: 0.3
+      contrast: 0.3
+      hue: 0.1
+      saturation: 0.3
+    gaussian_blur: 0.2
+    horizontal_flip: 0.5
+    random_crop: true
+    random_rotate: 10
+    random_scale:
+    - 0.5
+    - 2.0
+  val:
+    resize:
+    - 256
+    - 512
+data:
+  image_size:
+  - 256
+  - 512
+  num_classes: 19
+  root_dir: ./data
+  use_synthetic: true
+evaluation:
+  batch_size: 4
+  boundary_threshold: 5
+  metrics:
+  - miou
+  - boundary_f1
+  - occlusion_recall
+  - pixel_accuracy
+  occlusion_classes:
+  - 11
+  - 12
+  - 13
+  - 14
+inference:
+  batch_size: 1
+  flip_test: false
+  multi_scale: false
+  output_dir: ./results
+  target_fps: 15
+logging:
+  log_dir: ./logs
+  log_interval: 10
+  mlflow:
+    experiment_name: urban_occlusion_segmentation
+    tracking_uri: ./mlruns
+  tensorboard: true
+loss:
+  auxiliary: boundary_loss
+  occlusion:
+    boundary_weight: 3.0
+    boundary_width: 5
+    edge_threshold: 0.1
+  primary: occlusion_weighted_ce
+  weights:
+    auxiliary: 0.3
+    primary: 0.7
+model:
+  deeplabv3plus:
+    backbone: resnet101
+    output_stride: 16
+    pretrained: true
+  ensemble:
+    uncertainty_threshold: 0.3
+    weights:
+    - 0.5
+    - 0.5
+  segformer:
+    backbone: mit_b3
+    dropout: 0.1
+    pretrained: true
+  type: ensemble
+system:
+  device: cuda
+  num_workers: 0
+  pin_memory: true
+  seed: 42
+training:
+  amp: true
+  batch_size: 2
+  early_stopping:
+    min_delta: 0.001
+    patience: 10
+  gradient_clip: 1.0
+  keep_best: true
+  learning_rate: 0.0001
+  num_epochs: 50
+  optimizer: adamw
+  save_dir: ./checkpoints
+  save_freq: 5
+  scheduler: cosine
+  warmup_epochs: 5
+  weight_decay: 0.0001

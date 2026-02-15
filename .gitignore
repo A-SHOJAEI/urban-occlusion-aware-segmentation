@@ -24,8 +24,7 @@ wheels/
 venv/
 env/
 ENV/
-.venv
-.env
+.venv/
 
 # IDEs
 .vscode/
@@ -36,7 +35,6 @@ ENV/
 
 # Jupyter
 .ipynb_checkpoints/
-*.ipynb_checkpoints
 
 # Testing
 .pytest_cache/
@@ -44,17 +42,17 @@ ENV/
 htmlcov/
 .tox/
 
-# ML artifacts
-*.pth
-*.pt
-*.ckpt
-checkpoints/
-models/
+# MLflow / experiment tracking
 mlruns/
-runs/
 wandb/
-logs/
+
+# Logs
 *.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Data
 data/raw/
@@ -63,16 +61,15 @@ data/cityscapes/
 *.zip
 *.tar.gz
 
-# Results
-results/
-outputs/
-experiments/
-
-# OS
-.DS_Store
-Thumbs.db
-
 # Temporary files
 tmp/
 temp/
 *.tmp
+
+# Environment variables
+.env
+
+# Large model files (>100MB, requires Git LFS)
+# Note: These files exceed GitHub's 100MB file size limit.
+# To obtain them, re-run training or download from the release.
+checkpoints/*.pth
