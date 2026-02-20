@@ -1,0 +1,23 @@
+{
+  "checkpoint": "checkpoints/best_model.pth",
+  "config": "configs/default.yaml",
+  "metrics": {
+    "miou": 0.17995324429821308,
+    "pixel_accuracy": 0.31705062866210937,
+    "boundary_f1": 0.41442977942099324,
+    "occlusion_recall": 0.21468210494217035,
+    "mean_inference_time_ms": 913.2473945617676,
+    "inference_fps": 1.0949935427736552,
+    "num_samples_measured": 15
+  },
+  "evaluation_settings": {
+    "num_classes": 19,
+    "occlusion_classes": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "device": "cpu"
+  }
+}
