@@ -1,0 +1,31 @@
+{
+  "project": "urban-occlusion-aware-segmentation",
+  "description": "Semantic segmentation with explicit occlusion boundary handling using SegFormer and DeepLabV3+ ensemble",
+  "dataset": "Cityscapes (synthetic, 50 samples, 256x512)",
+  "metrics": {
+    "miou": 0.17995324429821308,
+    "pixel_accuracy": 0.31705062866210937,
+    "boundary_f1": 0.41442977942099324,
+    "occlusion_recall": 0.21468210494217035,
+    "mean_inference_time_ms": 913.2473945617676,
+    "inference_fps": 1.0949935427736552,
+    "num_samples_measured": 15
+  },
+  "training_summary": {
+    "epochs": 50,
+    "best_val_loss": 2.7373,
+    "best_epoch": 48,
+    "initial_val_loss": 4.4735,
+    "loss_reduction_percent": 38.8,
+    "training_time_minutes": 22.77,
+    "architecture": "ensemble",
+    "num_classes": 19
+  },
+  "evaluation_settings": {
+    "num_classes": 19,
+    "occlusion_classes": [11, 12, 13, 14],
+    "device": "cpu"
+  },
+  "config_file": "configs/default.yaml",
+  "checkpoint_file": "checkpoints/best_model.pth"
+}
